@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BloodServe - Donor Records</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="navbar">
+    <h1>BloodServe</h1>
+    <nav>
+      <a href="/admin">Dashboard</a>
+      <a href="/add">➕ Add Donor</a>
+      <a href="/request">📋 Requests</a>
+      <a href="#" onclick="logout()">Logout</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <h2>👥 Donor Records</h2>
+    <p>View, search and manage all registered blood donors.</p>
+  </div>
+
+  <div class="table-container">
+    <h2>All Donors</h2>
+
+    <!-- Search & Filter -->
+    <div style="margin-bottom:1rem;display:flex;gap:1rem;flex-wrap:wrap;align-items:center;">
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="🔍 Search by name, blood group or city..."
+        oninput="filterDonors()"
+        style="flex:1;margin:0;"
+      >
+      <select
+        id="bloodFilter"
+        onchange="filterDonors()"
+        style="width:160px;margin:0;"
+      >
+        <option value="">All Blood Groups</option>
+        <option>A+</option><option>A-</option>
+        <option>B+</option><option>B-</option>
+        <option>AB+</option><option>AB-</option>
+        <option>O+</option><option>O-</option>
+      </select>
+      <select
+        id="genderFilter"
+        onchange="filterDonors()"
+        style="width:130px;margin:0;"
+      >
+        <option value="">All Genders</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+      </select>
+    </div>
+
+    <!-- Add Donor Button -->
+    <div style="text-align:right;margin-bottom:1rem;">
+      <a href="/add" class="btn"
+        style="width:auto;padding:0.8rem 1.5rem;">
+        ➕ Add New Donor
+      </a>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Gender</th>
+          <th>Age</th>
+          <th>Blood Group</th>
+          <th>Phone</th>
+          <th>Address</th>
+          <th>Last Donation</th>
+          <th>Medical Info</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="donorTableBody">
+        <tr><td colspan="10">Loading donors...</td></tr>
+      </tbody>
+    </table>
+
+    <!-- Donor Count -->
+    <p style="margin-top:1rem;color:#888;font-size:0.9rem;">
+      Total: <strong id="donorCount">0</strong> donors
+    </p>
+
+  </div>
+
+  <footer class="footer">
+    <p>&copy; 2026 BloodServe | Powered by Aislyn Technologies</p>
+  </footer>
+
+  <script src="js/app.js"></script>
+  <script src="js/script.js"></script>
+  <script>
+    let allDonors = [];
+
+    async function loadDonors() {
+      const tbody = document.getElementById('donorTableBody');
+      try {
+        const res = await fetch('http://localhost:3000/donors');
+        allDonors = await res.json();
+        renderDonors(allDonors);
+      } catch (err) {
+        tbody.innerHTML = '<tr><td colspan="10" style="color:red;">Error loading donors</td></tr>';
+      }
+    }
+
+    function renderDonors(donors) {
+      const tbody = document.getElementById('donorTableBody');
+      document.getElementById('donorCount').textContent = donors.length;
+
+      if (donors.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="10" style="color:#999;">No donors found</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = donors.map(d => `
+        <tr>
+          <td>${d.id}</td>
+          <td>${d.name}</td>
+          <td>${d.gender || '-'}</td>
+          <td>${d.age || '-'}</td>
+          <td><span class="blood-badge">${d.bloodGroup}</span></td>
+          <td>${d.phone || '-'}</td>
+          <td>${d.address || '-'}</td>
+          <td>${d.lastDonationDate || '-'}</td>
+          <td>${d.medicalConditions || '-'}</td>
+          <td class="actions">
+            <button onclick="deleteDonor(${d.id})"
+              class="btn btn-danger">🗑 Delete</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function filterDonors() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      const blood = document.getElementById('bloodFilter').value;
+      const gender = document.getElementById('genderFilter').value;
+
+      const filtered = allDonors.filter(d => {
+        const matchSearch =
+          d.name.toLowerCase().includes(search) ||
+          d.bloodGroup.toLowerCase().includes(search) ||
+          (d.address || '').toLowerCase().includes(search);
+        const matchBlood = !blood || d.bloodGroup === blood;
+        const matchGender = !gender || d.gender === gender;
+        return matchSearch && matchBlood && matchGender;
+      });
+      renderDonors(filtered);
+    }
+
+    async function deleteDonor(id) {
+      if (!confirm('Are you sure you want to delete this donor?')) return;
+      try {
+        const res = await fetch(`http://localhost:3000/donors/${id}`,
+          { method: 'DELETE' });
+        if (res.ok) {
+          showFlash('Donor deleted successfully!');
+          loadDonors();
+        } else {
+          showFlash('Error deleting donor', 'error');
+        }
+      } catch (err) {
+        showFlash('Error connecting to server', 'error');
+      }
+    }
+
+    loadDonors();
+  </script>
+</body>
+</html>

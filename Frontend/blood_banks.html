@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BloodServe - Blood Bank Distribution</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .filter-section {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+      align-items: center;
+    }
+    .blood-group-btn {
+      padding: 0.5rem 1.2rem;
+      border-radius: 20px;
+      border: 2px solid #e53935;
+      background: white;
+      color: #e53935;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+    .blood-group-btn:hover,
+    .blood-group-btn.active {
+      background: #e53935;
+      color: white;
+    }
+    .chart-container {
+      max-width: 500px;
+      margin: 0 auto 2rem;
+    }
+    .hospital-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.2rem;
+      margin-bottom: 1rem;
+      border-left: 5px solid #e53935;
+      box-shadow: 0 4px 12px rgba(183,28,28,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .hospital-info h3 {
+      color: #c62828;
+      font-size: 1rem;
+      margin-bottom: 0.3rem;
+    }
+    .hospital-info p {
+      color: #666;
+      font-size: 0.85rem;
+      margin: 0.2rem 0;
+    }
+    .units-badge {
+      background: #e53935;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+    .units-badge span {
+      display: block;
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    .no-data {
+      text-align: center;
+      color: #999;
+      padding: 2rem;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="navbar">
+    <h1>BloodServe</h1>
+    <nav>
+      <a href="/admin">Dashboard</a>
+      <a href="/admin-page">👥 Donors</a>
+      <a href="/request">📋 Requests</a>
+      <a href="#" onclick="logout()">Logout</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <h2>🩸 Blood Group Distribution</h2>
+    <p>Find hospitals with available blood units by blood group.</p>
+  </div>
+
+  <div class="table-container">
+
+    <!-- Pie Chart -->
+    <h2>Blood Group Overview</h2>
+    <div class="chart-container">
+      <canvas id="bloodChart"></canvas>
+    </div>
+
+    <!-- Blood Group Filter Buttons -->
+    <h2 style="margin-bottom:1rem;">Filter by Blood Group</h2>
+    <div class="filter-section">
+      <button class="blood-group-btn active"
+        onclick="filterBloodGroup('all', this)">
+        All
+      </button>
+      <button class="blood-group-btn"
+        onclick="filterBloodGroup('A+', this)">A+</button>
+      <button class="blood-group-btn"
+        onclick="filterBloodGroup('A-', this)">A-</button>
+      <button class="blood-group-btn"
+        onclick="filterBloodGroup('B+', this)">B+</button>
+      <button class="blood-group-btn"
+        onclick="filterBloodGroup('B-', this)">B-</button>
+      <button class="blood-group-btn"
+        onclick="filterBloodGroup('AB+', this)">AB+</button>
+      <button class="blood-group-btn"
+        onclick="filterBloodGroup('AB-', this)">AB-</button>
+      <button class="blood-group-btn"
+        onclick="filterBloodGroup('O+', this)">O+</button>
+      <button class="blood-group-btn"
+        onclick="filterBloodGroup('O-', this)">O-</button>
+    </div>
+
+    <!-- Total count -->
+    <p style="color:#888;font-size:0.9rem;margin-bottom:1rem;">
+      Showing: <strong id="totalCount">0</strong> hospitals
+    </p>
+
+    <!-- Hospital Cards -->
+    <div id="hospitalList">
+      <p class="no-data">Loading...</p>
+    </div>
+
+  </div>
+
+  <footer class="footer">
+    <p>&copy; 2026 BloodServe | Powered by Aislyn Technologies</p>
+  </footer>
+
+  <script src="js/app.js"></script>
+  <script>
+    let allBanks = [];
+
+    // Load all blood banks
+    async function loadBloodBanks() {
+      try {
+        const res = await fetch('http://localhost:3000/bloodbanks');
+        allBanks = await res.json();
+        renderHospitals(allBanks);
+        renderChart(allBanks);
+      } catch (err) {
+        document.getElementById('hospitalList').innerHTML =
+          '<p class="no-data">Error loading data!</p>';
+      }
+    }
+
+    // Render hospital cards
+    function renderHospitals(banks) {
+      const list = document.getElementById('hospitalList');
+      document.getElementById('totalCount').textContent = banks.length;
+
+      if (banks.length === 0) {
+        list.innerHTML = '<p class="no-data">No hospitals found for this blood group!</p>';
+        return;
+      }
+
+      list.innerHTML = banks.map(b => `
+        <div class="hospital-card">
+          <div class="hospital-info">
+            <h3>🏥 ${b.hospital_name}</h3>
+            <p>📍 ${b.location}, ${b.city}</p>
+            <p>📞 ${b.phone || 'N/A'}</p>
+            <p>🩸 Blood Group: <span class="blood-badge">${b.blood_group}</span></p>
+          </div>
+          <div class="units-badge">
+            <span>${b.units_available}</span>
+            Units Available
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Filter by blood group
+    function filterBloodGroup(group, btn) {
+      // Update active button
+      document.querySelectorAll('.blood-group-btn').forEach(b => {
+        b.classList.remove('active');
+      });
+      btn.classList.add('active');
+
+      // Filter data
+      if (group === 'all') {
+        renderHospitals(allBanks);
+      } else {
+        const filtered = allBanks.filter(b => b.blood_group === group);
+        renderHospitals(filtered);
+      }
+    }
+
+    // Render pie chart
+    function renderChart(banks) {
+      const bloodGroups = {
+        'A+': 0, 'A-': 0,
+        'B+': 0, 'B-': 0,
+        'AB+': 0, 'AB-': 0,
+        'O+': 0, 'O-': 0
+      };
+
+      banks.forEach(b => {
+        if (bloodGroups[b.blood_group] !== undefined) {
+          bloodGroups[b.blood_group] += b.units_available;
+        }
+      });
+
+      const ctx = document.getElementById('bloodChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: Object.keys(bloodGroups),
+          datasets: [{
+            data: Object.values(bloodGroups),
+            backgroundColor: [
+              '#e53935', '#b71c1c',
+              '#1e88e5', '#0d47a1',
+              '#43a047', '#1b5e20',
+              '#fb8c00', '#e65100'
+            ],
+            borderWidth: 2,
+            borderColor: 'white'
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                font: { size: 13 },
+                padding: 15
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return context.label + ': ' + context.raw + ' units';
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Load on page start
+    loadBloodBanks();
+  </script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BloodServe - Admin Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="navbar">
+    <h1>BloodServe</h1>
+    <nav>
+      <a href="/admin">Dashboard</a>
+      <a href="/admin-page">👥 Donors</a>
+      <a href="/request">📋 Requests</a>
+      <a href="/add">➕ Add Donor</a>
+      <a href="/add-request">🩸 Add Request</a>
+      <a href="#" onclick="logout()">Logout</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <h2>⚕️ Dashboard</h2>
+    <p>Manage donors, blood requests and records.</p>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="number" id="totalDonors">...</div>
+      <div class="label">Total Donors</div>
+    </div>
+    <div class="stat-card">
+      <div class="number" id="totalRequests">...</div>
+      <div class="label">Total Requests</div>
+    </div>
+    <div class="stat-card">
+      <div class="number">🩸</div>
+      <div class="label">BloodServe Active</div>
+    </div>
+    <div class="stat-card">
+      <div class="number">24/7</div>
+      <div class="label">Always Available</div>
+    </div>
+  </div>
+
+
+  <!-- Action Buttons -->
+  <div class="admin-container">
+    <h2 style="color:#c62828;margin-bottom:1rem;">Quick Actions</h2>
+    <div class="admin-actions">
+
+      <a href="/add" class="btn"
+        style="width:200px;text-align:center;">
+        ➕ Add New Donor
+      </a>
+
+      <a href="/admin-page" class="btn btn-secondary"
+        style="width:200px;text-align:center;">
+        👥 View All Donors
+      </a>
+
+      <a href="/add-request" class="btn"
+        style="width:200px;text-align:center;">
+        🩸 Add Blood Request
+      </a>
+
+      <a href="/request" class="btn btn-secondary"
+        style="width:200px;text-align:center;">
+        📋 View All Requests
+      </a>
+      <a href="/blood-banks" class="btn"
+         style="width:200px;text-align:center;">
+          📊 Blood Group Distribution
+      </a>
+
+      <a href="/learn" class="btn btn-secondary"
+        style="width:200px;text-align:center;">
+        📖 Learn
+      </a>
+
+      <a href="/mission" class="btn btn-secondary"
+        style="width:200px;text-align:center;">
+        🎯 Our Mission
+      </a>
+
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>&copy; 2026 BloodServe | Powered by Aislyn Technologies</p>
+  </footer>
+
+  <script src="js/app.js"></script>
+  <script src="js/script.js"></script>
+  <script>
+    loadStats();
+  </script>
+</body>
+</html>

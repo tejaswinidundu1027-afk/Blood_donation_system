@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BloodServe - Add Blood Request</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .match-popup {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+    }
+    .match-popup.show {
+      display: flex;
+    }
+    .match-box {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      width: 600px;
+      max-width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    .match-box h3 {
+      color: #c62828;
+      text-align: center;
+      margin-bottom: 0.5rem;
+      font-size: 1.3rem;
+    }
+    .match-box p.subtitle {
+      text-align: center;
+      color: #888;
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+    }
+    .close-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: #e53935;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: bold;
+    }
+    .donor-match-card {
+      background: #fff5f5;
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-left: 5px solid #e53935;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .donor-match-card h4 {
+      color: #c62828;
+      margin-bottom: 0.3rem;
+      font-size: 1rem;
+    }
+    .donor-match-card p {
+      color: #555;
+      font-size: 0.85rem;
+      margin: 0.2rem 0;
+    }
+    .no-match {
+      text-align: center;
+      padding: 1.5rem;
+      color: #888;
+      font-size: 0.95rem;
+    }
+    .match-count {
+      background: #e53935;
+      color: white;
+      border-radius: 20px;
+      padding: 0.3rem 1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: inline-block;
+      margin-bottom: 1rem;
+    }
+    .success-banner {
+      background: #e8f5e9;
+      border-left: 5px solid #43a047;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      color: #2e7d32;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="navbar">
+    <h1>BloodServe</h1>
+    <nav>
+      <a href="/admin">Dashboard</a>
+      <a href="/admin-page">👥 Donors</a>
+      <a href="/request">📋 Requests</a>
+      <a href="#" onclick="logout()">Logout</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <h2>🩸 Add Blood Request</h2>
+    <p>Fill in the details — we will find matching donors automatically!</p>
+  </div>
+
+  <main class="form-container">
+    <h2>Request Registration</h2>
+
+    <form id="requestForm">
+
+      <label style="color:#c62828;font-weight:600;font-size:0.9rem;">
+        Full Name *
+      </label>
+      <input type="text" name="requesterName"
+        placeholder="Enter full name" required>
+
+      <label style="color:#c62828;font-weight:600;font-size:0.9rem;">
+        Phone Number
+      </label>
+      <input type="tel" name="phone"
+        placeholder="Enter phone number">
+
+      <label style="color:#c62828;font-weight:600;font-size:0.9rem;">
+        Email Address
+      </label>
+      <input type="email" name="email"
+        placeholder="Enter email address">
+
+      <label style="color:#c62828;font-weight:600;font-size:0.9rem;">
+        Blood Group Needed *
+      </label>
+      <select name="bloodGroup" required>
+        <option value="">Select Blood Group</option>
+        <option>A+</option>
+        <option>A-</option>
+        <option>B+</option>
+        <option>B-</option>
+        <option>AB+</option>
+        <option>AB-</option>
+        <option>O+</option>
+        <option>O-</option>
+      </select>
+
+      <label style="color:#c62828;font-weight:600;font-size:0.9rem;">
+        Units Required *
+      </label>
+      <input type="number" name="quantity"
+        placeholder="Enter number of units"
+        min="1" max="10" required>
+
+      <label style="color:#c62828;font-weight:600;font-size:0.9rem;">
+        Date Needed *
+      </label>
+      <input type="date" name="date" required>
+
+      <label style="color:#c62828;font-weight:600;font-size:0.9rem;">
+        Hospital / Location
+      </label>
+      <input type="text" name="location"
+        placeholder="Enter hospital name or location">
+
+      <label style="color:#c62828;font-weight:600;font-size:0.9rem;">
+        Urgency Level *
+      </label>
+      <select name="urgency" required>
+        <option value="">Select Urgency</option>
+        <option value="Normal">Normal</option>
+        <option value="Urgent">Urgent</option>
+        <option value="Critical">Critical</option>
+      </select>
+
+      <label style="color:#c62828;font-weight:600;font-size:0.9rem;">
+        Reason for Request
+      </label>
+      <textarea name="reason"
+        placeholder="Enter reason (surgery, accident, etc.)"
+        rows="3"></textarea>
+
+      <button type="submit" class="btn">
+        🩸 Submit Request
+      </button>
+
+      <a href="/request" class="btn btn-secondary"
+        style="display:block;text-align:center;margin-top:0.5rem;">
+        ← Back to Requests
+      </a>
+
+    </form>
+  </main>
+
+  <!-- Match Popup -->
+  <div class="match-popup" id="matchPopup">
+    <div class="match-box">
+      <button class="close-btn" onclick="closePopup()">✕</button>
+      <h3>🩸 Request Submitted!</h3>
+      <p class="subtitle">Matching donors found for your request</p>
+      <div id="matchContent"></div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>&copy; 2026 BloodServe | Powered by Aislyn Technologies</p>
+  </footer>
+
+  <script src="js/script.js"></script>
+  <script>
+    document.getElementById('requestForm')
+      .addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(e.target));
+
+      try {
+        const res = await fetch('http://localhost:3000/requests/add', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        const result = await res.json();
+
+        if (res.ok) {
+          showMatchPopup(result);
+          e.target.reset();
+        } else {
+          showFlash(result.error || 'Error submitting request', 'error');
+        }
+
+      } catch (err) {
+        showFlash('Error connecting to server', 'error');
+      }
+    });
+
+    function showMatchPopup(result) {
+      const content = document.getElementById('matchContent');
+      const donors = result.matchedDonors || [];
+
+      let html = `
+        <div class="success-banner">
+          ✅ Request submitted! Request ID: #${result.requestId}
+        </div>
+      `;
+
+      if (donors.length > 0) {
+        html += `
+          <p>
+            <span class="match-count">
+              🎯 ${donors.length} Matching Donor${donors.length > 1 ? 's' : ''} Found!
+            </span>
+          </p>
+        `;
+        html += donors.map(d => `
+          <div class="donor-match-card">
+            <div>
+              <h4>👤 ${d.name}</h4>
+              <p>🩸 Blood Group: <strong>${d.bloodGroup}</strong></p>
+              <p>📍 Location: ${d.address || 'Not specified'}</p>
+              <p>📞 Phone: ${d.phone || 'Not available'}</p>
+            </div>
+            <span class="blood-badge">${d.bloodGroup}</span>
+          </div>
+        `).join('');
+      } else {
+        html += `
+          <div class="no-match">
+            <p style="font-size:2rem;">😔</p>
+            <p>No matching donors found for
+              <strong>${result.bloodGroup || 'this blood group'}</strong>
+              in your area right now.</p>
+            <p style="margin-top:0.5rem;">
+              We will notify you when a donor registers!
+            </p>
+          </div>
+        `;
+      }
+
+      content.innerHTML = html;
+      document.getElementById('matchPopup').classList.add('show');
+    }
+
+    function closePopup() {
+      document.getElementById('matchPopup').classList.remove('show');
+    }
+  </script>
+</body>
+</html>

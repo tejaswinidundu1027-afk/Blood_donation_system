@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BloodServe - Request Blood</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="navbar">
+    <h1>BloodServe</h1>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/request">📋 View Requests</a>
+      <a href="/learn">Learn</a>
+      <a href="#" onclick="logout()">Logout</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <h2>Request Blood</h2>
+    <p>Fill in the details below to submit a blood request.</p>
+  </div>
+
+  <main class="form-container">
+    <h2>Blood Request Form</h2>
+
+    <form id="requestForm">
+
+      <!-- Requester Name -->
+      <label style="color:#c62828;font-weight:600;font-size:0.9rem;">
+        Full Name *
+      </label>
+      <input
+        type="text"
+        name="requesterName"
+        placeholder="Enter your full name"
+        required
+      >
+
+      <!-- Phone -->
+      <label style="color:#c62828;font-weight:600;font-size:0.9rem;">
+        Phone Number
+      </label>
+      <input
+        type="tel"
+        name="phone"
+        placeholder="Enter your phone number"
+      >
+
+      <!-- Email -->
+      <label style="color:#c62828;font-weight:600;font-size:0.9rem;">
+        Email Address
+      </label>
+      <input
+        type="email"
+        name="email"
+        placeholder="Enter your email address"
+      >
+
+      <!-- Blood Group -->
+      <label style="color:#c62828;font-weight:600;font-size:0.9rem;">
+        Blood Group Needed *
+      </label>
+      <select name="bloodGroup" required>
+        <option value="">Select Blood Group</option>
+        <option>A+</option>
+        <option>A-</option>
+        <option>B+</option>
+        <option>B-</option>
+        <option>AB+</option>
+        <option>AB-</option>
+        <option>O+</option>
+        <option>O-</option>
+      </select>
+
+      <!-- Quantity -->
+      <label style="color:#c62828;font-weight:600;font-size:0.9rem;">
+        Units Required *
+      </label>
+      <input
+        type="number"
+        name="quantity"
+        placeholder="Enter number of units needed"
+        min="1"
+        max="10"
+        required
+      >
+
+      <!-- Date Needed -->
+      <label style="color:#c62828;font-weight:600;font-size:0.9rem;">
+        Date Needed *
+      </label>
+      <input
+        type="date"
+        name="date"
+        required
+      >
+
+      <!-- Hospital / Location -->
+      <label style="color:#c62828;font-weight:600;font-size:0.9rem;">
+        Hospital / Location
+      </label>
+      <input
+        type="text"
+        name="location"
+        placeholder="Enter hospital name or location"
+      >
+
+      <!-- Patient Name -->
+      <label style="color:#c62828;font-weight:600;font-size:0.9rem;">
+        Patient Name
+      </label>
+      <input
+        type="text"
+        name="patientName"
+        placeholder="Enter patient name"
+      >
+
+      <!-- Urgency -->
+      <label style="color:#c62828;font-weight:600;font-size:0.9rem;">
+        Urgency Level *
+      </label>
+      <select name="urgency" required>
+        <option value="">Select Urgency</option>
+        <option value="Normal">Normal</option>
+        <option value="Urgent">Urgent</option>
+        <option value="Critical">Critical</option>
+      </select>
+
+      <!-- Reason -->
+      <label style="color:#c62828;font-weight:600;font-size:0.9rem;">
+        Reason for Request
+      </label>
+      <textarea
+        name="reason"
+        placeholder="Enter reason (surgery, accident, etc.)"
+        rows="3"
+      ></textarea>
+
+      <button type="submit" class="btn">
+        🩸 Submit Request
+      </button>
+
+      <a href="/request" class="btn btn-secondary"
+        style="display:block;text-align:center;margin-top:0.5rem;">
+        ← Back to Requests
+      </a>
+
+    </form>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2026 BloodServe | Powered by Aislyn Technologies</p>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

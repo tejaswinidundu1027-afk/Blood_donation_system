@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BloodServe - Learn</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="navbar">
+    <h1>BloodServe</h1>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/mission">Our Mission</a>
+      <a href="/login">Login</a>
+      <a href="/register">Register</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <h2>Learn About Blood Donation</h2>
+    <p>Everything you need to know about saving lives through blood donation.</p>
+  </div>
+
+  <div class="table-container" style="max-width:800px;">
+
+    <h2>Why Donate Blood?</h2>
+    <p style="color:#555;margin-bottom:1.5rem;line-height:1.8;">
+      Every 2 seconds someone needs blood. One donation can save up to 3 lives.
+      Blood cannot be manufactured — it can only come from generous donors like you.
+    </p>
+
+    <h2 style="margin-top:2rem;">Who Can Donate?</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Criteria</th>
+          <th>Requirement</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Age</td><td>18 to 65 years</td></tr>
+        <tr><td>Weight</td><td>At least 50 kg</td></tr>
+        <tr><td>Health</td><td>Generally healthy</td></tr>
+        <tr><td>Hemoglobin</td><td>Minimum 12.5 g/dL</td></tr>
+        <tr><td>Gap between donations</td><td>Every 3 months</td></tr>
+      </tbody>
+    </table>
+
+    <h2 style="margin-top:2rem;">Blood Type Compatibility</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Blood Type</th>
+          <th>Can Donate To</th>
+          <th>Can Receive From</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="blood-badge">O-</span></td><td>All types</td><td>O-</td></tr>
+        <tr><td><span class="blood-badge">O+</span></td><td>O+, A+, B+, AB+</td><td>O+, O-</td></tr>
+        <tr><td><span class="blood-badge">A-</span></td><td>A-, A+, AB-, AB+</td><td>A-, O-</td></tr>
+        <tr><td><span class="blood-badge">A+</span></td><td>A+, AB+</td><td>A+, A-, O+, O-</td></tr>
+        <tr><td><span class="blood-badge">B-</span></td><td>B-, B+, AB-, AB+</td><td>B-, O-</td></tr>
+        <tr><td><span class="blood-badge">B+</span></td><td>B+, AB+</td><td>B+, B-, O+, O-</td></tr>
+        <tr><td><span class="blood-badge">AB-</span></td><td>AB-, AB+</td><td>A-, B-, O-, AB-</td></tr>
+        <tr><td><span class="blood-badge">AB+</span></td><td>AB+ only</td><td>All types</td></tr>
+      </tbody>
+    </table>
+
+    <div style="text-align:center;margin-top:2rem;">
+      <a href="/register" class="btn" style="width:auto;padding:1rem 2rem;">
+        🩸 Register as Donor
+      </a>
+    </div>
+
+  </div>
+
+  <footer class="footer">
+    <p>&copy; 2026 BloodServe | Powered by Aislyn Technologies</p>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
